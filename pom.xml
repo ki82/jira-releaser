@@ -40,6 +40,11 @@
       </plugin>
     </plugins>
   </build>
+  <scm>
+    <url>http://github.com/ki82/jira-releaser</url>
+    <connection>scm:git:git://github.com/ki82/jira-releaser.git</connection>
+    <developerConnection>scm:git:git@github.com:ki82/jira-releaser.git</developerConnection>
+  </scm>
   <distributionManagement>
     <repository>
         <id>repo</id>
@@ -97,6 +102,12 @@
       <groupId>xom</groupId>
       <artifactId>xom</artifactId>
       <version>1.1</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache.maven.plugins</groupId>
+    	<artifactId>maven-release-plugin</artifactId>
+    	<version>2.2.2</version>
+    	<type>maven-plugin</type>
     </dependency>
   </dependencies>
   <repositories>
