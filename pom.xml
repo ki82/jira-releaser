@@ -48,11 +48,11 @@
   <distributionManagement>
     <repository>
         <id>repo</id>
-        <url>https://github.com/ki82/mvn-repo/raw/master/releases</url>
+        <url>https://raw.github.com/ki82/mvn-repo/master/releases</url>
     </repository>
     <snapshotRepository>
         <id>snapshot-repo</id>
-        <url>https://github.com/ki82/mvn-repo/raw/master/snapshots</url>
+        <url>https://raw.github.com/ki82/mvn-repo/master/snapshots</url>
     </snapshotRepository>
   </distributionManagement>
   <dependencies>
