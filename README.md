@@ -11,6 +11,9 @@ Currently only works if the checkins are on trunk.
 
 Change Log
 ----------
-### 0.1 (9 May 2012)
 
+### 0.0.2 (9 May 2012)
+- Updated maven repo URL:s
+
+### 0.0.1 (9 May 2012)
 - Initial release
