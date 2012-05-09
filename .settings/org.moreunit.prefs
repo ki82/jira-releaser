@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+org.moreunit.prefixes=
+org.moreunit.test_methodType=testMethodTypeNoPrefix
+org.moreunit.test_type=junit4
+org.moreunit.unitsourcefolder=jira-releaser\:src/main/java\:jira-releaser\:src/test/java
+org.moreunit.useprojectsettings=true
