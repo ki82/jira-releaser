@@ -33,7 +33,7 @@ public class Arguments {
 
     }
 
-    static Arguments parse(final String[] args) {
+    static Arguments parse(final String... args) {
         final Arguments argumentParser = new Arguments();
         new JCommander(argumentParser, args);
         return argumentParser;
