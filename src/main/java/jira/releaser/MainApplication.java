@@ -14,6 +14,10 @@ public class MainApplication {
     private static SOAPSession soapSession;
 
     public static void main(final String[] args) throws Exception {
+        runWithArgs(args);
+    }
+
+    public static void runWithArgs(final String... args) throws Exception {
         final Arguments arguments = Arguments.parse(args);
         jiraUrl = new URL(arguments.getJiraUrl() + SOAPSERVICE_URL);
         soapSession = new SOAPSession(jiraUrl);
