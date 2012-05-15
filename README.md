@@ -15,6 +15,9 @@ Currently only works if the checkins are on trunk.
 Change Log
 ----------
 
+### 0.0.4 (15 May 2012)
+- Added startDate as optional parameter
+
 ### 0.0.3 (10 May 2012)
 - Added extension point MainApplication.runWithArgs()
 
