@@ -11,9 +11,6 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 
-import jira.releaser.FixedIssuesFinder;
-import jira.releaser.JiraConnection;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -55,7 +52,7 @@ public class FixedIssuesFinderTest extends AbstractMockitoTestCase {
 
     @Test
     public void shouldSearchForIssuesFixedAfterDate() throws Exception {
-        fixedIssuesFinder.getIssuesFixedAfter(START_DATE);
+        fixedIssuesFinder.getIssuesFixedAfter(START_DATE, END_DATE);
 
         verify(jiraConnection).getIssuesForSearch(contains(START_DATE), anyInt());
     }
@@ -70,19 +67,19 @@ public class FixedIssuesFinderTest extends AbstractMockitoTestCase {
     @Test
     public void shouldFilterOutIssuesWithFixVersionMatchingVersionNumber() throws Exception {
         when(issue.getFixVersions()).thenReturn(fixVersions);
-        assertTrue(fixedIssuesFinder.getIssuesFixedAfter(START_DATE).isEmpty());
+        assertTrue(fixedIssuesFinder.getIssuesFixedAfter(START_DATE, END_DATE).isEmpty());
     }
 
     @Test
     public void shouldNotFilterOutIssuesWithoutFixVersions() throws Exception {
-        assertThat(fixedIssuesFinder.getIssuesFixedAfter(START_DATE), contains(issue));
+        assertThat(fixedIssuesFinder.getIssuesFixedAfter(START_DATE, END_DATE), contains(issue));
     }
 
     @Test
     public void shouldNotFilterOutIssuesWithOtherFixVersions() throws Exception {
         when(issue.getFixVersions()).thenReturn(fixVersions);
         when(fixVersion.getName()).thenReturn("Santa Clause");
-        assertThat(fixedIssuesFinder.getIssuesFixedAfter(START_DATE), contains(issue));
+        assertThat(fixedIssuesFinder.getIssuesFixedAfter(START_DATE, END_DATE), contains(issue));
     }
 
 

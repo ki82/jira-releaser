@@ -25,11 +25,7 @@ public class MainApplication {
         final JiraConnection jiraConnection = JiraConnection.login(arguments, soapSession);
         final FixedIssuesFinder issuesFinder = new FixedIssuesFinder(jiraConnection);
         List<RemoteIssue> issues;
-        if (arguments.getEndDate() != null) {
-            issues = issuesFinder.getIssuesFixedAfter("2011-12-10", arguments.getEndDate());
-        } else {
-            issues = issuesFinder.getIssuesFixedAfter("2011-12-10");
-        }
+        issues = issuesFinder.getIssuesFixedAfter(arguments.getStartDate(), arguments.getEndDate());
         final FishEyeConnection fishEyeConnection = FishEyeConnection.login(arguments, new Builder());
         final RevisionFinder revisionFinder = new RevisionFinder(fishEyeConnection);
         final IssueFilterer issueFilterer = new IssueFilterer(revisionFinder);

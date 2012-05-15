@@ -1,10 +1,16 @@
 package jira.releaser;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 
 public class Arguments {
 
+    private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     @Parameter(names = "--username", required=true)
     private String username;
@@ -25,12 +31,15 @@ public class Arguments {
     private String fisheyeUrl;
 
     @Parameter(names = "--end-date")
-    private String endDate;
+    private final String endDate;
 
+    @Parameter(names = "--start-date")
+    private final String startDate;
 
 
     private Arguments() {
-
+        endDate = dateFormat.format(Calendar.getInstance().getTime());
+        startDate = dateFormat.format(new Date(0));
     }
 
     static Arguments parse(final String... args) {
@@ -65,6 +74,10 @@ public class Arguments {
 
     String getFisheyeUrl() {
         return fisheyeUrl;
+    }
+
+    String getStartDate() {
+        return startDate;
     }
 
 }

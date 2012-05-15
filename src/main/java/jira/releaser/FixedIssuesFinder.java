@@ -1,10 +1,7 @@
 package jira.releaser;
 
 import java.rmi.RemoteException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import com.atlassian.jira.rpc.soap.client.RemoteIssue;
@@ -18,11 +15,6 @@ public class FixedIssuesFinder {
 
     public FixedIssuesFinder(final JiraConnection jiraConnection) {
         this.jiraConnection = jiraConnection;
-    }
-
-    List<RemoteIssue> getIssuesFixedAfter(final String startDate) throws RemoteException {
-        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        return getIssuesFixedAfter(startDate, dateFormat.format(Calendar.getInstance().getTime()));
     }
 
     List<RemoteIssue> getIssuesFixedAfter(final String startDate, final String endDate) throws RemoteException {
