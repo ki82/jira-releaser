@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.ki82.jira.releaser</groupId>
   <artifactId>jira-releaser</artifactId>
-  <version>0.0.4-SNAPSHOT</version>
+  <version>0.0.4</version>
   <name>Jira Releaser</name>
   <build>
     <defaultGoal>package</defaultGoal>
