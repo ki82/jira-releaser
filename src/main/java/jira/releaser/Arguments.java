@@ -30,10 +30,10 @@ public class Arguments {
     @Parameter(names = "--fisheye-url", required=true)
     private String fisheyeUrl;
 
-    @Parameter(names = "--end-date")
+    @Parameter(names = "--end-date", description = "In format yyyy:MM:dd HH:mm")
     private final String endDate;
 
-    @Parameter(names = "--start-date")
+    @Parameter(names = "--start-date", description = "In format yyyy:MM:dd HH:mm")
     private final String startDate;
 
 

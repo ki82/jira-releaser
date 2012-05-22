@@ -12,9 +12,11 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import com.atlassian.jira.rpc.soap.client.RemoteException;
 import com.atlassian.jira.rpc.soap.client.RemoteIssue;
 import com.atlassian.jira.rpc.soap.client.RemoteVersion;
 import com.google.common.collect.Lists;
@@ -23,9 +25,9 @@ public class FixedIssuesFinderTest extends AbstractMockitoTestCase {
 
     private static final String RELEASE_NUMBER = "4.7.0-p11";
 
-    private static final String START_DATE = "2001-09-11";
+    private static final String START_DATE = "2001-09-11 13:00";
 
-    private static final String END_DATE = "2008-08-08";
+    private static final String END_DATE = "2008-08-08 13:00";
 
     private FixedIssuesFinder fixedIssuesFinder;
 
@@ -80,6 +82,14 @@ public class FixedIssuesFinderTest extends AbstractMockitoTestCase {
         when(issue.getFixVersions()).thenReturn(fixVersions);
         when(fixVersion.getName()).thenReturn("Santa Clause");
         assertThat(fixedIssuesFinder.getIssuesFixedAfter(START_DATE, END_DATE), contains(issue));
+    }
+
+    @Ignore
+    @Test
+    public void shouldSplitTheQueryWhenToManySearchResult() throws Exception {
+        when(jiraConnection.getIssuesForSearch(anyString(), anyInt())).thenThrow(new RemoteException());
+
+        fixedIssuesFinder.getIssuesFixedAfter(START_DATE, END_DATE);
     }
 
 

@@ -3,8 +3,6 @@ package jira.releaser;
 import java.net.URL;
 import java.util.List;
 
-import nu.xom.Builder;
-
 import com.atlassian.jira.rpc.soap.client.RemoteIssue;
 import com.atlassian.jira_soapclient.SOAPSession;
 
@@ -26,12 +24,14 @@ public class MainApplication {
         final FixedIssuesFinder issuesFinder = new FixedIssuesFinder(jiraConnection);
         List<RemoteIssue> issues;
         issues = issuesFinder.getIssuesFixedAfter(arguments.getStartDate(), arguments.getEndDate());
-        final FishEyeConnection fishEyeConnection = FishEyeConnection.login(arguments, new Builder());
-        final RevisionFinder revisionFinder = new RevisionFinder(fishEyeConnection);
-        final IssueFilterer issueFilterer = new IssueFilterer(revisionFinder);
-        final List<RemoteIssue> filteredIssues = issueFilterer.excludeCommitsAfter(issues, arguments.getTaggedRevision());
-        final IssueReleaser issueReleaser = new IssueReleaser(jiraConnection);
-        issueReleaser.addFixVersionTo(filteredIssues, arguments.getFixVersion());
+        System.out.println(issues.size());
+//
+//        final FishEyeConnection fishEyeConnection = FishEyeConnection.login(arguments, new Builder());
+//        final RevisionFinder revisionFinder = new RevisionFinder(fishEyeConnection);
+//        final IssueFilterer issueFilterer = new IssueFilterer(revisionFinder);
+//        final List<RemoteIssue> filteredIssues = issueFilterer.excludeCommitsAfter(issues, arguments.getTaggedRevision());
+//        final IssueReleaser issueReleaser = new IssueReleaser(jiraConnection);
+//        issueReleaser.addFixVersionTo(filteredIssues, arguments.getFixVersion());
     }
 
 }
