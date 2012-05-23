@@ -90,6 +90,21 @@ public class FixedIssuesFinderTest extends AbstractMockitoTestCase {
 
     @Test
     public void shouldSplitTheQueryWhenToManySearchResult() throws Exception {
+        final RemoteIssue lastIssue = givenQueryResultCountWillExceedLimit();
+        when(lastIssue.getCreated()).thenReturn(getDate(2001, 9, 11, 13, 00));
+
+        fixedIssuesFinder.getIssuesFixedAfter(START_DATE, END_DATE);
+
+        verify(jiraConnection).getIssuesForSearch(contains("createdDate >= '2001-09-11 13:00'"), anyInt());
+    }
+
+    private Calendar getDate(final int year, final int month, final int day, final int hour, final int minute) {
+        final Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month - 1, day, hour, minute);
+        return calendar;
+    }
+
+    private RemoteIssue givenQueryResultCountWillExceedLimit() {
         remoteIssues.clear();
         for (int i = 0; i < 999; i++) {
             final RemoteIssue issue = mock(RemoteIssue.class);
@@ -99,17 +114,8 @@ public class FixedIssuesFinderTest extends AbstractMockitoTestCase {
         }
         final RemoteIssue lastIssue = mock(RemoteIssue.class);
         when(lastIssue.getFixVersions()).thenReturn(new RemoteVersion[0]);
-        remoteIssues.add(lastIssue );
-
-        final Calendar calendar = Calendar.getInstance();
-        calendar.set(2001, Calendar.SEPTEMBER, 11, 13, 00);
-        when(lastIssue.getCreated()).thenReturn(calendar);
-
-        fixedIssuesFinder.getIssuesFixedAfter(START_DATE, END_DATE);
-
-        verify(jiraConnection).getIssuesForSearch(contains("createdDate >= '2001-09-11 13:00'"), anyInt());
-
-
+        remoteIssues.add(lastIssue);
+        return lastIssue;
     }
 
 
