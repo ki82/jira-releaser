@@ -15,6 +15,9 @@ Currently only works if the checkins are on trunk.
 Change Log
 ----------
 
+### 0.0.5 (23 May 2012)
+- Added support for unlimited number of Jira issues.
+
 ### 0.0.4 (15 May 2012)
 - Added startDate as optional parameter
 
