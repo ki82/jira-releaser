@@ -12,9 +12,9 @@ import com.atlassian.jira.rpc.soap.client.RemoteIssue;
 import com.atlassian.jira.rpc.soap.client.RemoteVersion;
 import com.google.common.collect.Lists;
 
-public class FixedIssuesFinder {
+class FixedIssuesFinder {
 
-    private static final int LIMIT = Integer.MAX_VALUE;
+    private static final int LIMIT = 1000;
     private final JiraConnection jiraConnection;
     private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");;
 
@@ -23,24 +23,24 @@ public class FixedIssuesFinder {
         this.jiraConnection = jiraConnection;
     }
 
-    List<RemoteIssue> getIssuesFixedAfter(final String startDate, final String endDate) throws ParseException {
+    List<RemoteIssue> getIssuesFixedAfter(final String startDate, final String endDate) throws ParseException, RemoteException {
+        return getIssues(startDate, endDate, new Date(0));
+    }
+
+    private List<RemoteIssue> getIssues(final String startDate, final String endDate, final Date creationDate)
+            throws RemoteException {
         final String query = "resolution = Fixed AND " +
                 "status IN (Closed, Resolved) AND " +
-                "status CHANGED TO (Closed, Resolved) AFTER '" + startDate + "' BEFORE'" + endDate + "'";
+                "status CHANGED TO (Closed, Resolved) AFTER '" + startDate + "' BEFORE '" + endDate + "' AND " +
+                "createdDate >= '" + dateFormat.format(creationDate) + "' ORDER BY createdDate ASC";
 
         System.out.println("Jira Query: " + query);
 
         final List<RemoteIssue> issues = Lists.newArrayList();
-        try {
-            issues.addAll(jiraConnection.getIssuesForSearch(query, LIMIT));
-        } catch (final RemoteException e) {
+        issues.addAll(jiraConnection.getIssuesForSearch(query, LIMIT));
+        if (issues.size() == LIMIT) {
             System.out.println("To many results from Jira query, splitting the query into subqueries");
-            final Date start = dateFormat.parse(startDate);
-            final Date end = dateFormat.parse(endDate);
-            final long middleTime = (end.getTime() + start.getTime()) / 2;
-            final Date middle = new Date(middleTime);
-            issues.addAll(getIssuesFixedAfter(dateFormat.format(start), dateFormat.format(middle)));
-            issues.addAll(getIssuesFixedAfter(dateFormat.format(middle), dateFormat.format(end)));
+            issues.addAll(getIssues(startDate, endDate, issues.get(LIMIT - 1).getCreated().getTime()));
         }
         return removeReleasedIssues(issues);
     }

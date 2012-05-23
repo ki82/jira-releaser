@@ -6,17 +6,18 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.contains;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import com.atlassian.jira.rpc.soap.client.RemoteException;
 import com.atlassian.jira.rpc.soap.client.RemoteIssue;
 import com.atlassian.jira.rpc.soap.client.RemoteVersion;
 import com.google.common.collect.Lists;
@@ -25,7 +26,7 @@ public class FixedIssuesFinderTest extends AbstractMockitoTestCase {
 
     private static final String RELEASE_NUMBER = "4.7.0-p11";
 
-    private static final String START_DATE = "2001-09-11 13:00";
+    private static final String START_DATE = "2005-09-11 13:00";
 
     private static final String END_DATE = "2008-08-08 13:00";
 
@@ -42,10 +43,13 @@ public class FixedIssuesFinderTest extends AbstractMockitoTestCase {
 
     private RemoteVersion[] fixVersions;
 
+    @SuppressWarnings("unchecked")
     @Before
     public void setup() throws Exception {
-        remoteIssues = Lists.newArrayList(issue);
-        when(jiraConnection.getIssuesForSearch(anyString(), anyInt())).thenReturn(remoteIssues);
+        remoteIssues = Lists.newArrayList();
+        remoteIssues.add(issue);
+        when(jiraConnection.getIssuesForSearch(anyString(), anyInt())).thenReturn(
+                remoteIssues, new ArrayList<RemoteIssue>());
         when(fixVersion.getName()).thenReturn(RELEASE_NUMBER);
         fixVersions = new RemoteVersion[] { fixVersion };
         when(issue.getFixVersions()).thenReturn(new RemoteVersion[0]);
@@ -84,12 +88,28 @@ public class FixedIssuesFinderTest extends AbstractMockitoTestCase {
         assertThat(fixedIssuesFinder.getIssuesFixedAfter(START_DATE, END_DATE), contains(issue));
     }
 
-    @Ignore
     @Test
     public void shouldSplitTheQueryWhenToManySearchResult() throws Exception {
-        when(jiraConnection.getIssuesForSearch(anyString(), anyInt())).thenThrow(new RemoteException());
+        remoteIssues.clear();
+        for (int i = 0; i < 999; i++) {
+            final RemoteIssue issue = mock(RemoteIssue.class);
+            when(issue.getFixVersions()).thenReturn(new RemoteVersion[0]);
+            remoteIssues.add(issue);
+
+        }
+        final RemoteIssue lastIssue = mock(RemoteIssue.class);
+        when(lastIssue.getFixVersions()).thenReturn(new RemoteVersion[0]);
+        remoteIssues.add(lastIssue );
+
+        final Calendar calendar = Calendar.getInstance();
+        calendar.set(2001, Calendar.SEPTEMBER, 11, 13, 00);
+        when(lastIssue.getCreated()).thenReturn(calendar);
 
         fixedIssuesFinder.getIssuesFixedAfter(START_DATE, END_DATE);
+
+        verify(jiraConnection).getIssuesForSearch(contains("createdDate >= '2001-09-11 13:00'"), anyInt());
+
+
     }
 
 
