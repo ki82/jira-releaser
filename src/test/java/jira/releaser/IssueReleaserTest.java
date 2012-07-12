@@ -1,14 +1,12 @@
 package jira.releaser;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-
-import jira.releaser.IssueReleaser;
-import jira.releaser.JiraConnection;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -51,8 +49,7 @@ public class IssueReleaserTest extends AbstractMockitoTestCase {
 
     @Test
     public void shouldAddExistingFixVersionToIssue() throws Exception {
-        existingVersions.add(version);
-        when(version.getName()).thenReturn(VERSION_NAME);
+        givenExistingFixVersionWithName(VERSION_NAME);
 
         issueReleaser.addFixVersionTo(issues, VERSION_NAME);
 
@@ -67,6 +64,31 @@ public class IssueReleaserTest extends AbstractMockitoTestCase {
         issueReleaser.addFixVersionTo(issues, VERSION_NAME);
 
         verify(jiraConnection).addFixVersionToIssue(issue, version);
+    }
+
+    @Test
+    public void shouldSetExistingFixVersionToReleasedWhenUnreleased() throws Exception {
+        givenExistingFixVersionWithName(VERSION_NAME);
+        when(version.isReleased()).thenReturn(false);
+
+        issueReleaser.addFixVersionTo(issues, VERSION_NAME);
+
+        verify(jiraConnection).releaseFixVersion(version, PROJECT_NAME);
+    }
+
+    @Test
+    public void shouldNotSetExistingFixVersionToReleasedWhenReleased() throws Exception {
+        givenExistingFixVersionWithName(VERSION_NAME);
+        when(version.isReleased()).thenReturn(true);
+
+        issueReleaser.addFixVersionTo(issues, VERSION_NAME);
+
+        verify(jiraConnection, never()).releaseFixVersion(any(RemoteVersion.class), anyString());
+    }
+
+    private void givenExistingFixVersionWithName(final String versionName) {
+        existingVersions.add(version);
+        when(version.getName()).thenReturn(versionName);
     }
 
 }

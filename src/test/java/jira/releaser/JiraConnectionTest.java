@@ -4,8 +4,6 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import jira.releaser.Arguments;
-import jira.releaser.JiraConnection;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,11 +11,13 @@ import org.mockito.Mock;
 
 import com.atlassian.jira.rpc.soap.client.JiraSoapService;
 import com.atlassian.jira.rpc.soap.client.RemoteIssue;
+import com.atlassian.jira.rpc.soap.client.RemoteVersion;
 import com.atlassian.jira_soapclient.SOAPSession;
 
 
 public class JiraConnectionTest extends AbstractMockitoTestCase {
 
+    private static final String PROJECT_NAME = "project-name";
     private static final RemoteIssue[] NO_ISSUES = new RemoteIssue[0];
     private static final String USERNAME = "Username";
     private static final String PASSWORD = "Password";
@@ -33,6 +33,8 @@ public class JiraConnectionTest extends AbstractMockitoTestCase {
     SOAPSession soapSession;
     @Mock
     JiraSoapService jiraService;
+    @Mock
+    RemoteVersion version;
 
     @Before
     public void setup() throws Exception {
@@ -53,6 +55,12 @@ public class JiraConnectionTest extends AbstractMockitoTestCase {
         when(jiraService.getIssuesFromJqlSearch(anyString(), anyString(), anyInt())).thenReturn(NO_ISSUES);
         jiraConnection.getIssuesForSearch(QUERY, LIMIT);
         verify(jiraService).getIssuesFromJqlSearch(TOKEN, QUERY, LIMIT);
+    }
+
+    @Test
+    public void releasesFixVersion() throws Exception {
+        jiraConnection.releaseFixVersion(version, PROJECT_NAME);
+        verify(jiraService).releaseVersion(TOKEN, PROJECT_NAME, version);
     }
 
 }

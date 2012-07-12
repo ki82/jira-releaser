@@ -58,6 +58,11 @@ public class JiraConnection {
         return Lists.newArrayList(jiraService.getVersions(token, projectName));
     }
 
+    public void releaseFixVersion(final RemoteVersion version, final String projectName)
+            throws RemoteException {
+        jiraService.releaseVersion(token, projectName, version);
+    }
+
     public RemoteVersion createReleasedVersion(final String versionName, final String projectName)
             throws RemoteException {
         final RemoteVersion remoteVersion = new RemoteVersion();
