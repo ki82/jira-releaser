@@ -71,9 +71,19 @@ public class FixedIssuesFinderTest extends AbstractMockitoTestCase {
     }
 
     @Test
-    public void shouldFilterOutIssuesWithFixVersionMatchingVersionNumber() throws Exception {
+    public void shouldFilterOutIssuesWithReleasedFixVersionMatchingAnyVersionNumber()
+            throws Exception {
         when(issue.getFixVersions()).thenReturn(fixVersions);
+        when(fixVersion.isReleased()).thenReturn(true);
         assertTrue(fixedIssuesFinder.getIssuesFixedAfter(START_DATE, END_DATE).isEmpty());
+    }
+
+    @Test
+    public void shouldNotFilterOutIssuesWithUnreleasedFixVersionMatchingAnyVersionNumber()
+            throws Exception {
+        when(issue.getFixVersions()).thenReturn(fixVersions);
+        when(fixVersion.isReleased()).thenReturn(false);
+        assertThat(fixedIssuesFinder.getIssuesFixedAfter(START_DATE, END_DATE), contains(issue));
     }
 
     @Test

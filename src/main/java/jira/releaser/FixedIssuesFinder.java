@@ -62,11 +62,23 @@ class FixedIssuesFinder {
     private boolean issueIsReleased(final RemoteIssue issue) {
         final RemoteVersion[] fixVersions = issue.getFixVersions();
         for (int i = 0; i < fixVersions.length; i++) {
-            if (ReleasePatternMatcher.isReleaseNumber(fixVersions[i].getName())) {
+            if (isReleasedWithVersionNumber(fixVersions[i])) {
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean isReleasedWithVersionNumber(final RemoteVersion fixVersion) {
+        return isReleased(fixVersion) && isReleaseNumber(fixVersion);
+    }
+
+    private boolean isReleased(final RemoteVersion fixVersion) {
+        return fixVersion.isReleased();
+    }
+
+    private boolean isReleaseNumber(final RemoteVersion fixVersion) {
+        return ReleasePatternMatcher.isReleaseNumber(fixVersion.getName());
     }
 
 }
