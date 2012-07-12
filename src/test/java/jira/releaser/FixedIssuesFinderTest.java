@@ -1,7 +1,7 @@
 package jira.releaser;
 
 import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
@@ -14,7 +14,6 @@ import java.rmi.RemoteException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.List;
 
 import org.junit.Before;
@@ -25,7 +24,7 @@ import com.atlassian.jira.rpc.soap.client.RemoteIssue;
 import com.atlassian.jira.rpc.soap.client.RemoteVersion;
 import com.google.common.collect.Lists;
 
-@SuppressWarnings({ "rawtypes", "unchecked" })
+@SuppressWarnings({ "unchecked" })
 public class FixedIssuesFinderTest extends AbstractMockitoTestCase {
 
     private static final String RELEASE_NUMBER = "4.7.0-p11";
@@ -112,8 +111,8 @@ public class FixedIssuesFinderTest extends AbstractMockitoTestCase {
     }
 
     private void assertNoIssueFound() throws ParseException, RemoteException {
-        assertThat((Collection)fixedIssuesFinder.getIssuesFixedAfter(START_DATE, END_DATE),
-                empty());
+        assertThat(fixedIssuesFinder.getIssuesFixedAfter(START_DATE, END_DATE),
+                hasSize(0));
     }
 
     private void assertFound(final RemoteIssue foundIssue) throws Exception {
