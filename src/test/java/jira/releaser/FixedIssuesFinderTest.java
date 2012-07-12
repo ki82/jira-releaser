@@ -10,6 +10,8 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.rmi.RemoteException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -75,7 +77,7 @@ public class FixedIssuesFinderTest extends AbstractMockitoTestCase {
             throws Exception {
         when(issue.getFixVersions()).thenReturn(fixVersions);
         when(fixVersion.isReleased()).thenReturn(true);
-        assertTrue(fixedIssuesFinder.getIssuesFixedAfter(START_DATE, END_DATE).isEmpty());
+        assertNoIssueFound();
     }
 
     @Test
@@ -83,19 +85,19 @@ public class FixedIssuesFinderTest extends AbstractMockitoTestCase {
             throws Exception {
         when(issue.getFixVersions()).thenReturn(fixVersions);
         when(fixVersion.isReleased()).thenReturn(false);
-        assertThat(fixedIssuesFinder.getIssuesFixedAfter(START_DATE, END_DATE), contains(issue));
+        assertFound(issue);
     }
 
     @Test
     public void shouldNotFilterOutIssuesWithoutFixVersions() throws Exception {
-        assertThat(fixedIssuesFinder.getIssuesFixedAfter(START_DATE, END_DATE), contains(issue));
+        assertFound(issue);
     }
 
     @Test
     public void shouldNotFilterOutIssuesWithOtherFixVersions() throws Exception {
         when(issue.getFixVersions()).thenReturn(fixVersions);
         when(fixVersion.getName()).thenReturn("Santa Clause");
-        assertThat(fixedIssuesFinder.getIssuesFixedAfter(START_DATE, END_DATE), contains(issue));
+        assertFound(issue);
     }
 
     @Test
@@ -106,6 +108,15 @@ public class FixedIssuesFinderTest extends AbstractMockitoTestCase {
         fixedIssuesFinder.getIssuesFixedAfter(START_DATE, END_DATE);
 
         verify(jiraConnection).getIssuesForSearch(contains("createdDate >= '2001-09-11 13:00'"), anyInt());
+    }
+
+    private void assertNoIssueFound() throws ParseException, RemoteException {
+        assertTrue(fixedIssuesFinder.getIssuesFixedAfter(START_DATE, END_DATE).isEmpty());
+    }
+
+    private void assertFound(final RemoteIssue foundIssue) throws Exception {
+        assertThat(fixedIssuesFinder.getIssuesFixedAfter(START_DATE, END_DATE),
+                contains(foundIssue));
     }
 
     private Calendar getDate(final int year, final int month, final int day, final int hour, final int minute) {
