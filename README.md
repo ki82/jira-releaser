@@ -15,6 +15,9 @@ Currently only works if the checkins are on trunk.
 Change Log
 ----------
 
+### 0.0.6 (17 July 2012)
+- Only treating an issue as previously released if its fix version is released.
+
 ### 0.0.5 (23 May 2012)
 - Added support for unlimited number of Jira issues.
 
